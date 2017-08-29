@@ -22,10 +22,10 @@ func NewStat(message *queue.Message) (Stat) {
 
 func(stat *Stat) Print()  {
 	const padding = 3
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, '-', tabwriter.AlignRight|tabwriter.Debug)
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, '-', tabwriter.Debug)
 	values := ""
 	for _, stage := range stat.Stages {
-		values = values + stage.Name + "\t" + strconv.Itoa(int(stage.ProcessingTime.Nanoseconds() / 1000000)) + "ms\t"
+		values = values + stage.Name + ": " + strconv.Itoa(int(stage.ProcessingTime.Nanoseconds() / 1000000)) + "ms\t"
 	}
 	fmt.Fprintln(w, values)
 	w.Flush()
