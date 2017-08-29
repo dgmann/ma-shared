@@ -28,6 +28,7 @@ func(stat *Stat) Print()  {
 		values = values + stage.Name + "\t" + strconv.Itoa(int(stage.ProcessingTime.Nanoseconds() / 1000000)) + "ms\t"
 	}
 	fmt.Fprint(w, values)
+	w.Flush()
 }
 
 type Stat struct {
