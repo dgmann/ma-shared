@@ -27,7 +27,7 @@ func(stat *Stat) Print()  {
 	for _, stage := range stat.Stages {
 		values = values + stage.Name + "\t" + strconv.Itoa(int(stage.ProcessingTime.Nanoseconds() / 1000000)) + "ms\t"
 	}
-	fmt.Fprint(w, values)
+	fmt.Fprintln(w, values)
 	w.Flush()
 }
 
