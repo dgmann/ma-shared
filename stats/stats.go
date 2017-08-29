@@ -72,9 +72,12 @@ func calculateProcessingTimes(message *queue.Message) (Stages) {
 			times = append(times, current)
 			break
 		}
-		intermediate := Stage{}
-		intermediate.EnteredAt = current.LeftAt
-		intermediate.LeftAt = stages[i+1].EnteredAt
+		intermediate := Stage{
+			Stage: &queue.Stage{
+				EnteredAt:current.LeftAt,
+				LeftAt: stages[i+1].EnteredAt,
+			},
+		}
 		intermediate.ProcessingTime = intermediate.LeftAt.Sub(intermediate.EnteredAt)
 		times = append(times, current, intermediate)
 	}
