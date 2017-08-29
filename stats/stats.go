@@ -39,7 +39,7 @@ type Stat struct {
 }
 
 type Stage struct {
-	*queue.Stage
+	queue.Stage
 	Name string
 	ProcessingTime time.Duration
 }
@@ -61,7 +61,7 @@ func(stages Stages) Swap(i, j int) {
 func calculateProcessingTimes(message *queue.Message) (Stages) {
 	stages := Stages{}
 	for k, st := range message.Stages {
-		stages = append(stages, Stage{Stage: &st, Name: k})
+		stages = append(stages, Stage{Stage: st, Name: k, ProcessingTime: st.LeftAt.Sub(st.EnteredAt)})
 	}
 	sort.Sort(stages)
 
@@ -74,8 +74,9 @@ func calculateProcessingTimes(message *queue.Message) (Stages) {
 			break
 		}
 		intermediate := Stage{
-			Stage: &queue.Stage{
-				EnteredAt:current.LeftAt,
+			Name: current.Name + "<->" + stages[i+1].Name,
+			Stage: queue.Stage{
+				EnteredAt: current.LeftAt,
 				LeftAt: stages[i+1].EnteredAt,
 			},
 		}
