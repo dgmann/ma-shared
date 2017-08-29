@@ -24,15 +24,15 @@ func NewDelivery(delivery *amqp.Delivery) (*Delivery) {
 	return &Delivery{delivery, toMessage(delivery)}
 }
 
-func(delivery *Delivery) EnterStage(stageName string) {
-	delivery.Message.Stages[stageName] = Stage{
+func(message *Message) EnterStage(stageName string) {
+	message.Stages[stageName] = Stage{
 		EnteredAt: time.Now(),
 	}
 }
 
-func(delivery *Delivery) LeaveStage(stageName string) {
-	delivery.Message.Stages[stageName] = Stage{
-		EnteredAt: delivery.Message.Stages[stageName].EnteredAt,
+func(message *Message) LeaveStage(stageName string) {
+	message.Stages[stageName] = Stage{
+		EnteredAt: message.Stages[stageName].EnteredAt,
 		LeftAt: time.Now(),
 	}
 }
