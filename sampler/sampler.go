@@ -21,6 +21,7 @@ func init() {
 type VideoSample struct {
 	Raw image.YCbCr
 	FrameNumber int
+	ReadPacketAt time.Time
 	CreatedAt time.Time
 }
 
@@ -31,7 +32,7 @@ func Sample(path string) (chan VideoSample) {
 }
 
 func extractSample(path string) (chan VideoSample) {
-	samples := make(chan VideoSample)
+	samples := make(chan VideoSample, 10000)
 
 	go func() {
 		file, err := avutil.Open(path)
@@ -51,6 +52,7 @@ func extractSample(path string) (chan VideoSample) {
 
 		frameCount := 0
 		for {
+			readAt := time.Now()
 			pkt, err := demuxer.ReadPacket()
 			if err != nil {
 				close(samples)
@@ -62,6 +64,7 @@ func extractSample(path string) (chan VideoSample) {
 					sample := VideoSample{
 						Raw:frame.Image,
 						FrameNumber: frameCount,
+						ReadPacketAt:  readAt,
 						CreatedAt: time.Now(),
 					}
 					frame.Free()
