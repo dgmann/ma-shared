@@ -19,7 +19,7 @@ func init() {
 }
 
 type VideoSample struct {
-	img image.YCbCr
+	Raw image.YCbCr
 	FrameNumber int
 	CreatedAt time.Time
 }
@@ -60,7 +60,7 @@ func extractSample(path string) (chan VideoSample) {
 				frame, _ := dec.Decode(pkt.Data)
 				if frame != nil {
 					sample := VideoSample{
-						img:frame.Image,
+						Raw:frame.Image,
 						FrameNumber: frameCount,
 						CreatedAt: time.Now(),
 					}
@@ -75,7 +75,7 @@ func extractSample(path string) (chan VideoSample) {
 }
 
 func(sample *VideoSample) ToJPEG() (bytes.Buffer) {
-	img := sample.img
+	img := sample.Raw
 	var b bytes.Buffer
 	writer := bufio.NewWriter(&b)
 	jpeg.Encode(writer, &img, &jpeg.Options{Quality: 10})
