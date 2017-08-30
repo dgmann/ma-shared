@@ -3,7 +3,6 @@ package shared
 import (
 	"time"
 	"encoding/json"
-	"github.com/dgmann/ma-shared/openalpr"
 )
 
 func(message *Message) EnterStage(stageName string) {
@@ -34,7 +33,7 @@ type Stage struct {
 }
 
 type Results struct {
-	OpenALPR openalpr.OpenAlprResponse `json:"openalpr"`
+	OpenALPR OpenAlprResponse `json:"openalpr"`
 }
 
 func NewMessage(image []byte, frameNumer int, createdAt time.Time) (*Message) {

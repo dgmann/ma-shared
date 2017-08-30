@@ -1,7 +1,7 @@
 package stats
 
 import (
-	"github.com/dgmann/ma-shared/queue"
+	"github.com/dgmann/ma-shared"
 	"time"
 	"sort"
 	"text/tabwriter"
@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func NewStat(message *queue.Message) (Stat) {
+func NewStat(message *shared.Message) (Stat) {
 	stages := calculateProcessingTimes(message)
 	return Stat{
 		message,
@@ -32,14 +32,14 @@ func(stat *Stat) Print()  {
 }
 
 type Stat struct {
-	*queue.Message
+	*shared.Message
 	ReceivedAt time.Time
 	TotalProcessingTime time.Duration
 	Stages Stages
 }
 
 type Stage struct {
-	queue.Stage
+	shared.Stage
 	Name string
 	ProcessingTime time.Duration
 }
@@ -58,7 +58,7 @@ func(stages Stages) Swap(i, j int) {
 	stages[i], stages[j] = stages[j], stages[i]
 }
 
-func calculateProcessingTimes(message *queue.Message) (Stages) {
+func calculateProcessingTimes(message *shared.Message) (Stages) {
 	stages := Stages{}
 	for k, st := range message.Stages {
 		stages = append(stages, Stage{Stage: st, Name: k, ProcessingTime: st.LeftAt.Sub(st.EnteredAt)})
@@ -75,7 +75,7 @@ func calculateProcessingTimes(message *queue.Message) (Stages) {
 		}
 		intermediate := Stage{
 			Name: current.Name + "<->" + stages[i+1].Name,
-			Stage: queue.Stage{
+			Stage: shared.Stage{
 				EnteredAt: current.LeftAt,
 				LeftAt: stages[i+1].EnteredAt,
 			},

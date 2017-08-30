@@ -1,4 +1,4 @@
-package openalpr
+package shared
 
 type OpenAlprResponse struct {
 	EpochTime int `json:"epoch_time"`
