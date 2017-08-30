@@ -3,7 +3,6 @@ package shared
 import (
 	"time"
 	"encoding/json"
-	"github.com/dgmann/ma-shared/sampler"
 )
 
 func(message *Message) EnterStage(stageName string) {
@@ -57,7 +56,7 @@ func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Mes
 	return &msg
 }
 
-func NewMessageFromSample(sample sampler.VideoSample) (*Message) {
+func NewMessageFromSample(sample VideoSample) (*Message) {
 	msg := NewMessage(nil, sample.FrameNumber, sample.ReadPacketAt, sample.CreatedAt)
 	msg.EnterStage("Encode")
 	img := sample.ToJPEG()

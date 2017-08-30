@@ -5,34 +5,24 @@ import (
 	"fmt"
 	"github.com/dgmann/joy4/cgo/ffmpeg"
 	"github.com/nareix/joy4/av"
-	"image/jpeg"
-	"bufio"
 	"github.com/nareix/joy4/format"
-	"image"
 	"github.com/nareix/joy4/av/pktque"
 	"time"
-	"bytes"
+	"github.com/dgmann/ma-shared"
 )
 
 func init() {
 	format.RegisterAll()
 }
 
-type VideoSample struct {
-	Raw image.YCbCr
-	FrameNumber int
-	ReadPacketAt time.Time
-	CreatedAt time.Time
-}
-
-func Sample(path string) (chan VideoSample) {
+func Sample(path string) (chan shared.VideoSample) {
 	samples := extractSample(path)
 
 	return samples
 }
 
-func extractSample(path string) (chan VideoSample) {
-	samples := make(chan VideoSample, 10000)
+func extractSample(path string) (chan shared.VideoSample) {
+	samples := make(chan shared.VideoSample, 10000)
 
 	go func() {
 		file, err := avutil.Open(path)
@@ -61,7 +51,7 @@ func extractSample(path string) (chan VideoSample) {
 			if streams[pkt.Idx].Type().IsVideo() {
 				frame, _ := dec.Decode(pkt.Data)
 				if frame != nil {
-					sample := VideoSample{
+					sample := shared.VideoSample{
 						Raw:frame.Image,
 						FrameNumber: frameCount,
 						ReadPacketAt:  readAt,
@@ -75,13 +65,4 @@ func extractSample(path string) (chan VideoSample) {
 		}
 	}()
 	return samples
-}
-
-func(sample *VideoSample) ToJPEG() (bytes.Buffer) {
-	img := sample.Raw
-	var b bytes.Buffer
-	writer := bufio.NewWriter(&b)
-	jpeg.Encode(writer, &img, &jpeg.Options{Quality: 10})
-	writer.Flush()
-	return b
 }
