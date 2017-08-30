@@ -15,7 +15,7 @@ func NewStat(message *shared.Message) (Stat) {
 	return Stat{
 		message,
 		time.Now(),
-		stages[0].EnteredAt.Sub(stages[len(stages)-1].LeftAt),
+		stages[len(stages)-1].LeftAt.Sub(stages[0].EnteredAt),
 		stages,
 	}
 }
