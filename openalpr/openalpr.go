@@ -84,13 +84,13 @@ func (alpr *Alpr) RecognizeByFilePath(filePath string) (shared.OpenAlprResponse,
 	return results, err
 }
 
-func (alpr *Alpr) RecognizeByBlob(imageBytes []byte) (shared.OpenAlprLicensePlateResult, error) {
+func (alpr *Alpr) RecognizeByBlob(imageBytes []byte) (shared.OpenAlprResponse, error) {
 	stringImageBytes := string(imageBytes)
 	cstrImageBytes := C.CString(stringImageBytes)
 	defer C.free(unsafe.Pointer(cstrImageBytes))
 	stringResult := C.GoString(C.RecognizeByBlob(alpr.cAlpr, cstrImageBytes, C.int(len(imageBytes))))
 
-	var results shared.OpenAlprLicensePlateResult
+	var results shared.OpenAlprResponse
 	err := json.Unmarshal([]byte(stringResult), &results)
 
 	return results, err
