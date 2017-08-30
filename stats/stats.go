@@ -15,7 +15,7 @@ func NewStat(message *shared.Message) (Stat) {
 	return Stat{
 		message,
 		time.Now(),
-		message.CreatedAt.Sub(time.Now()),
+		stages[0].EnteredAt.Sub(stages[len(stages)-1].LeftAt),
 		stages,
 	}
 }
@@ -27,6 +27,7 @@ func(stat *Stat) Print()  {
 	for _, stage := range stat.Stages {
 		values = values + stage.Name + ": " + strconv.Itoa(int(stage.ProcessingTime.Nanoseconds() / 1000000)) + "ms\t"
 	}
+	values = values + "Total: " + strconv.Itoa(int(stat.TotalProcessingTime.Nanoseconds() / 1000000)) + "ms\t"
 	fmt.Fprintln(w, values)
 	w.Flush()
 }
