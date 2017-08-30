@@ -3,6 +3,7 @@ package shared
 import (
 	"time"
 	"encoding/json"
+	"github.com/dgmann/ma-shared/openalpr"
 )
 
 func(message *Message) EnterStage(stageName string) {
@@ -19,10 +20,12 @@ func(message *Message) LeaveStage(stageName string) {
 }
 
 type Message struct {
+	Origin string `json:"origin"`
 	Image []byte `json:"image"`
 	FrameNumber int `json:"frameNumber"`
 	CreatedAt time.Time `json:"createdAt"`
 	Stages map[string]Stage `json:"timeline"`
+	Results Results `json:"results"`
 }
 
 type Stage struct {
@@ -30,12 +33,18 @@ type Stage struct {
 	LeftAt time.Time `json:"leftAt"`
 }
 
+type Results struct {
+	OpenALPR openalpr.OpenAlprResponse `json:"openalpr"`
+}
+
 func NewMessage(image []byte, frameNumer int, createdAt time.Time) (*Message) {
 	return & Message{
+		Origin: "",
 		Image: image,
 		FrameNumber: frameNumer,
 		CreatedAt: createdAt,
 		Stages: make(map[string]Stage),
+		Results: Results{},
 	}
 }
 
