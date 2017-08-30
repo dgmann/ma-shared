@@ -54,6 +54,7 @@ func extractSample(path string) (chan VideoSample) {
 			pkt, err := demuxer.ReadPacket()
 			if err != nil {
 				close(samples)
+				println("Video sampled. Closed channel")
 				return
 			}
 			if streams[pkt.Idx].Type().IsVideo() {
