@@ -16,15 +16,15 @@ func failOnError(err error, msg string) {
 }
 
 type Delivery struct {
-	*amqp.Delivery
+	amqp.Delivery
 	Message *shared.Message
 }
 
-func NewDelivery(delivery *amqp.Delivery) (*Delivery) {
+func NewDelivery(delivery amqp.Delivery) (*Delivery) {
 	return &Delivery{delivery, toMessage(delivery)}
 }
 
-func toMessage(delivery *amqp.Delivery) (*shared.Message) {
+func toMessage(delivery amqp.Delivery) (*shared.Message) {
 	var message shared.Message
 	json.Unmarshal([]byte(delivery.Body), &message)
 	return &message

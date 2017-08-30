@@ -51,7 +51,7 @@ func(consumer *Consumer) Consume() (<- chan *Delivery) {
 	deliveries := make(chan *Delivery)
 	go func() {
 		for d := range del {
-			deliveries <- NewDelivery(&d)
+			deliveries <- NewDelivery(d)
 		}
 	}()
 
