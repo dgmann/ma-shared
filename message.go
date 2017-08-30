@@ -23,7 +23,7 @@ type Message struct {
 	Image []byte `json:"image"`
 	FrameNumber int `json:"frameNumber"`
 	CreatedAt time.Time `json:"createdAt"`
-	Stages map[string]Stage `json:"timeline"`
+	Stages map[string]Stage `json:"stages"`
 	Results Results `json:"results"`
 }
 
