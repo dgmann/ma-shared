@@ -1,6 +1,10 @@
 package shared
 
-import "os"
+import (
+	"os"
+	"log"
+	"fmt"
+)
 
 func GetEnvOrDefault(env, def string) string {
 	value := os.Getenv(env)
@@ -8,4 +12,11 @@ func GetEnvOrDefault(env, def string) string {
 		value = def
 	}
 	return value
+}
+
+func FailOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+		panic(fmt.Sprintf("%s: %s", msg, err))
+	}
 }
