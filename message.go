@@ -44,6 +44,9 @@ type Results struct {
 	OpenALPR OpenAlprResponse `json:"openalpr"`
 }
 
+const JPEG = "jpeg"
+const BMP = "bmp"
+
 func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Message) {
 	msg := Message{
 		Origin: "",
@@ -53,7 +56,7 @@ func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Mes
 		Stages: make(map[string]Stage),
 		Results: Results{},
 	}
-	msg.AddStage("Recorded", readAt, createdAt)
+	msg.AddStage("Decoded", readAt, createdAt)
 	return &msg
 }
 
@@ -61,9 +64,9 @@ func NewMessageFromSample(sample VideoSample, imageFormat string) (*Message) {
 	msg := NewMessage(nil, sample.FrameNumber, sample.ReadPacketAt, sample.CreatedAt)
 	msg.EnterStage("Encode")
 	var img bytes.Buffer
-	if imageFormat == "jpeg" {
+	if imageFormat == JPEG {
 		img = sample.ToJPEG()
-	} else if imageFormat == "bmp" {
+	} else if imageFormat == BMP {
 		img = sample.ToBitmap()
 	}
 
