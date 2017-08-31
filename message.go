@@ -3,7 +3,6 @@ package shared
 import (
 	"time"
 	"encoding/json"
-	"bytes"
 )
 
 func(message *Message) EnterStage(stageName string) {
@@ -44,9 +43,6 @@ type Results struct {
 	OpenALPR OpenAlprResponse `json:"openalpr"`
 }
 
-const JPEG = "jpeg"
-const BMP = "bmp"
-
 func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Message) {
 	msg := Message{
 		Origin: "",
@@ -60,16 +56,10 @@ func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Mes
 	return &msg
 }
 
-func NewMessageFromSample(sample VideoSample, imageFormat string) (*Message) {
+func NewMessageFromSample(sample VideoSample) (*Message) {
 	msg := NewMessage(nil, sample.FrameNumber, sample.ReadPacketAt, sample.CreatedAt)
 	msg.EnterStage("Encode")
-	var img bytes.Buffer
-	if imageFormat == JPEG {
-		img = sample.ToJPEG()
-	} else if imageFormat == BMP {
-		img = sample.ToBitmap()
-	}
-
+	img := sample.ToJPEG()
 	msg.Image = img.Bytes()
 	msg.LeaveStage("Encode")
 	return msg
