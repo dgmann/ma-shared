@@ -52,7 +52,7 @@ func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Mes
 		Stages: make(map[string]Stage),
 		Results: Results{},
 	}
-	msg.AddStage("Decoded", readAt, createdAt)
+	msg.AddStage("Decode", readAt, createdAt)
 	return &msg
 }
 
