@@ -3,6 +3,7 @@ package shared
 import (
 	"time"
 	"encoding/json"
+	"bytes"
 )
 
 func(message *Message) EnterStage(stageName string) {
@@ -56,10 +57,16 @@ func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Mes
 	return &msg
 }
 
-func NewMessageFromSample(sample VideoSample) (*Message) {
+func NewMessageFromSample(sample VideoSample, imageFormat string) (*Message) {
 	msg := NewMessage(nil, sample.FrameNumber, sample.ReadPacketAt, sample.CreatedAt)
 	msg.EnterStage("Encode")
-	img := sample.ToJPEG()
+	var img bytes.Buffer
+	if imageFormat == "jpeg" {
+		img = sample.ToJPEG()
+	} else if imageFormat == "bmp" {
+		img = sample.ToBitmap()
+	}
+
 	msg.Image = img.Bytes()
 	msg.LeaveStage("Encode")
 	return msg
