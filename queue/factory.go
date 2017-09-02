@@ -3,6 +3,8 @@ package queue
 import (
 	"github.com/streadway/amqp"
 	"github.com/dgmann/ma-shared"
+	"log"
+	"time"
 )
 
 type Factory struct {
