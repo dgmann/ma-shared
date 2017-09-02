@@ -45,11 +45,24 @@ func QueueConfigFromEnv() FactoryConfig {
 
 
 func NewFactory(config FactoryConfig) (*Factory) {
-	conn, err := amqp.Dial(config.ToConnectionString())
-	failOnError(err, "Failed to connect to RabbitMQ")
+	conn := connect(config.ToConnectionString())
 	return &Factory{
 		conn:conn,
 	}
+}
+
+func connect(uri string) *amqp.Connection {
+  for {
+    conn, err := amqp.Dial(uri)
+
+    if err == nil {
+      return conn
+    }
+
+    log.Println(err)
+    log.Printf("Trying to reconnect to queue at %s\n", uri)
+    time.Sleep(500 * time.Millisecond)
+  }
 }
 
 func(factory *Factory) Close()  {
