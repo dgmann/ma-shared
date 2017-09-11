@@ -1,8 +1,6 @@
 package sampler
 
 import (
-	"github.com/nareix/joy4/av/avutil"
-	"fmt"
 	"github.com/dgmann/joy4/cgo/ffmpeg"
 	"github.com/nareix/joy4/av"
 	"github.com/nareix/joy4/format"
@@ -15,21 +13,44 @@ func init() {
 	format.RegisterAll()
 }
 
-func Sample(path string) (chan shared.VideoSample) {
-	samples := extractSample(path)
+type VideoSource interface {
+	Open() av.Demuxer
+}
+
+type VideoServer interface {
+	Demuxers() <-chan av.Demuxer
+	Listen()
+}
+
+func Sample(source VideoSource) (chan shared.VideoSample) {
+	file := source.Open()
+	samples := extractSample(file)
 
 	return samples
 }
 
-func extractSample(path string) (chan shared.VideoSample) {
+func SampleMany(source VideoServer) (chan shared.VideoSample) {
+	result := make(chan shared.VideoSample, 10000)
+
+	go func() {
+		for demuxer := range source.Demuxers() {
+			samples := extractSample(demuxer)
+			go func() {
+				for sample := range samples {
+					result <- sample
+				}
+			}()
+		}
+	}()
+	return result
+}
+
+func extractSample(demuxer av.Demuxer) (chan shared.VideoSample) {
 	samples := make(chan shared.VideoSample, 10000)
 
 	go func() {
-		file, err := avutil.Open(path)
-		demuxer := &pktque.FilterDemuxer{Demuxer: file, Filter: &pktque.Walltime{}}
-		if err != nil {
-			fmt.Errorf("Error %s", err)
-		}
+
+		demuxer := &pktque.FilterDemuxer{Demuxer: demuxer, Filter: &pktque.Walltime{}}
 
 		streams, _ := demuxer.Streams()
 		var dec *ffmpeg.VideoDecoder
@@ -52,10 +73,10 @@ func extractSample(path string) (chan shared.VideoSample) {
 				frame, _ := dec.Decode(pkt.Data)
 				if frame != nil {
 					sample := shared.VideoSample{
-						Raw:frame.Image,
-						FrameNumber: frameCount,
-						ReadPacketAt:  readAt,
-						CreatedAt: time.Now(),
+						Raw:          frame.Image,
+						FrameNumber:  frameCount,
+						ReadPacketAt: readAt,
+						CreatedAt:    time.Now(),
 					}
 					frame.Free()
 					samples <- sample
@@ -64,5 +85,6 @@ func extractSample(path string) (chan shared.VideoSample) {
 			}
 		}
 	}()
+
 	return samples
 }

@@ -56,13 +56,16 @@ func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Mes
 	return &msg
 }
 
-func NewMessageFromSample(sample VideoSample) (*Message) {
+func NewMessageFromSample(sample VideoSample) (*Message, error) {
 	msg := NewMessage(nil, sample.FrameNumber, sample.ReadPacketAt, sample.CreatedAt)
 	msg.EnterStage("Encode")
-	img := sample.ToJPEG()
+	img, err := sample.ToJPEG()
+	if err != nil {
+		return nil, err
+	}
 	msg.Image = img.Bytes()
 	msg.LeaveStage("Encode")
-	return msg
+	return msg, err
 }
 
 func NewMessageFromJSON(b []byte) (*Message) {

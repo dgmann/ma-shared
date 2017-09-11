@@ -15,11 +15,15 @@ type VideoSample struct {
 	CreatedAt time.Time
 }
 
-func(sample *VideoSample) ToJPEG() (bytes.Buffer) {
+func(sample *VideoSample) ToJPEG() (bytes.Buffer, error) {
 	img := sample.Raw
 	var b bytes.Buffer
 	writer := bufio.NewWriter(&b)
-	jpeg.Encode(writer, &img, &jpeg.Options{Quality: 10})
+
+	err := jpeg.Encode(writer, &img, &jpeg.Options{Quality: 10})
+	if err != nil {
+		return b, err
+	}
 	writer.Flush()
-	return b
+	return b, nil
 }
