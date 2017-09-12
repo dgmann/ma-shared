@@ -7,14 +7,30 @@ import (
 	"fmt"
 	"github.com/dgmann/ma-shared"
 	"io"
+	"sort"
 )
 
 type Collector struct {
-	Stats []Stat
+	Stats Statistics
 }
 
+type Statistics []Stat
+
+func(statistics Statistics) Len()  int {
+	return len(statistics)
+}
+
+func(statistics Statistics) Less(i, j int)  bool {
+	return statistics[i].Message.FrameNumber < statistics[j].Message.FrameNumber
+}
+
+func(statistics Statistics) Swap(i, j int) {
+	statistics[i], statistics[j] = statistics[j], statistics[i]
+}
+
+
 func NewCollector() *Collector {
-	return &Collector{Stats: make([]Stat, 0, 1500)}
+	return &Collector{Stats: make(Statistics, 0, 1500)}
 }
 
 func(collector *Collector) Add(stat Stat) {
@@ -35,6 +51,8 @@ func(collector *Collector) ToCSV(w io.Writer) {
 			log.Fatalln("error writing header to csv:", err)
 		}
 	}
+	sort.Sort(collector.Stats)
+
 	for _, stat := range collector.Stats {
 		record := []string{}
 		for _, stage := range stat.Stages {
