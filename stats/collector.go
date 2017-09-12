@@ -37,7 +37,7 @@ func(collector *Collector) ToCSV(w io.Writer) {
 	for _, stat := range collector.Stats {
 		record := []string{}
 		for _, stage := range stat.Stages {
-			record = append(record, fmt.Sprintf("%v", stage.ProcessingTime.Nanoseconds()))
+			record = append(record, fmt.Sprintf("%v", stage.ProcessingTime.Seconds()))
 		}
 		if err := writer.Write(record); err != nil {
 			log.Fatalln("error writing record to csv:", err)
