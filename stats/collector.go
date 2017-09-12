@@ -30,6 +30,7 @@ func(collector *Collector) ToCSV(w io.Writer) {
 		for _, stage := range stat.Stages {
 			header = append(header, stage.Name)
 		}
+		header = append(header, "Total")
 		if err := writer.Write(header); err != nil {
 			log.Fatalln("error writing header to csv:", err)
 		}
@@ -39,6 +40,7 @@ func(collector *Collector) ToCSV(w io.Writer) {
 		for _, stage := range stat.Stages {
 			record = append(record, fmt.Sprintf("%v", stage.ProcessingTime.Seconds()))
 		}
+		record = append(record, fmt.Sprintf("%v", stat.TotalProcessingTime.Seconds()))
 		if err := writer.Write(record); err != nil {
 			log.Fatalln("error writing record to csv:", err)
 		}
