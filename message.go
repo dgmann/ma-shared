@@ -5,14 +5,22 @@ import (
 	"encoding/json"
 )
 
+type Stage struct {
+	Index int `json:"index"`
+	EnteredAt time.Time `json:"enteredAt"`
+	LeftAt time.Time `json:"leftAt"`
+}
+
 func(message *Message) EnterStage(stageName string) {
 	message.Stages[stageName] = Stage{
+		Index: len(message.Stages),
 		EnteredAt: time.Now(),
 	}
 }
 
 func(message *Message) LeaveStage(stageName string) {
 	message.Stages[stageName] = Stage{
+		Index: message.Stages[stageName].Index,
 		EnteredAt: message.Stages[stageName].EnteredAt,
 		LeftAt: time.Now(),
 	}
@@ -20,6 +28,7 @@ func(message *Message) LeaveStage(stageName string) {
 
 func(message *Message) AddStage(stageName string, enteredAt, leftAt time.Time) {
 	message.Stages[stageName] = Stage{
+		Index: len(message.Stages),
 		EnteredAt: enteredAt,
 		LeftAt: leftAt,
 	}
@@ -32,11 +41,6 @@ type Message struct {
 	CreatedAt time.Time `json:"createdAt"`
 	Stages map[string]Stage `json:"stages"`
 	Results Results `json:"results"`
-}
-
-type Stage struct {
-	EnteredAt time.Time `json:"enteredAt"`
-	LeftAt time.Time `json:"leftAt"`
 }
 
 type Results struct {

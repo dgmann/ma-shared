@@ -51,8 +51,8 @@ func(stages Stages) Len()  int {
 	return len(stages)
 }
 
-func(stages Stages) Less(i, j int)  bool {
-	return stages[i].EnteredAt.Before(stages[j].EnteredAt)
+func(stages Stages) Less(i, j int) bool {
+	return stages[i].Index < stages[j].Index
 }
 
 func(stages Stages) Swap(i, j int) {
