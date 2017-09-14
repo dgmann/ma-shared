@@ -1,7 +1,7 @@
 package shared
 
 type OpenAlprResponse struct {
-	EpochTime int `json:"epoch_time"`
+	EpochTime int64 `json:"epoch_time"`
 	ImageWidth int `json:"img_width"`
 	ImageHeight int `json:"img_height"`
 	TotalProcessingTimeMs float64 `json:"processing_time_ms"`
