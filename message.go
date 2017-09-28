@@ -40,11 +40,12 @@ type Message struct {
 	FrameNumber int `json:"frameNumber"`
 	CreatedAt time.Time `json:"createdAt"`
 	Stages map[string]Stage `json:"stages"`
-	Results Results `json:"results"`
+	Result Result `json:"result"`
 }
 
-type Results struct {
+type Result struct {
 	OpenALPR OpenAlprResponse `json:"openalpr"`
+	IsWanted bool `json:"isWanted"`
 }
 
 func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Message) {
@@ -54,7 +55,7 @@ func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Mes
 		FrameNumber: frameNumer,
 		CreatedAt: createdAt,
 		Stages: make(map[string]Stage),
-		Results: Results{},
+		Result: Result{},
 	}
 	msg.AddStage("Decode", readAt, createdAt)
 	return &msg
