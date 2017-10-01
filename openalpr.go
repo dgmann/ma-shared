@@ -6,7 +6,7 @@ type OpenAlprResponse struct {
 	ImageHeight int `json:"img_height"`
 	TotalProcessingTimeMs float64 `json:"processing_time_ms"`
 	Results []OpenAlprLicensePlateResult `json:"results"`
-	RegionsOfInterest []string `json:"regions_of_interest"`
+	RegionsOfInterest []OpenAlprRegionOfInterest `json:"regions_of_interest"`
 }
 
 type OpenAlprLicensePlateResult struct {
@@ -18,6 +18,13 @@ type OpenAlprLicensePlateResult struct {
 	Region string `json:"region"`
 	Coordinates []Coordinates `json:"coordinates"`
 	Plates []Plate `json:"candidates"`
+}
+
+type OpenAlprRegionOfInterest struct {
+	X      int `json:"x"`
+	Y      int `json:"y"`
+	Width  int `json:"width"`
+	Height int `json:"height"`
 }
 
 type Coordinates struct {
