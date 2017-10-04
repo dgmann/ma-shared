@@ -45,7 +45,7 @@ type Message struct {
 
 type Result struct {
 	OpenALPR OpenAlprResponse `json:"openalpr"`
-	IsWanted bool `json:"isWanted"`
+	WantedNumbers []string `json:"wanted"`
 }
 
 func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Message) {
