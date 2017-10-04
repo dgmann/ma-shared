@@ -16,16 +16,16 @@ type RedisStorage struct {
 	redis *redis.Client
 }
 
-func NewClient(host string) *RedisStorage {
+func NewRedisStorage(host string) *RedisStorage {
 	return &RedisStorage{redis:newRedisClient(host)}
 }
 
-func(storage *RedisStorage) Exists(key string) bool {
-	count, err := storage.redis.Exists(key).Result()
+func(storage *RedisStorage) Exists(keys ...string) bool {
+	count, err := storage.redis.Exists(keys...).Result()
 	if err != nil {
 		return false
 	}
-	return count != 0
+	return int(count) == len(keys)
 }
 
 func(storage *RedisStorage) Close() {

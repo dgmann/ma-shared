@@ -8,9 +8,14 @@ func NewMemoryStorage() *MemoryStorage {
 	return &MemoryStorage{table:make(map[string]bool)}
 }
 
-func(storage *MemoryStorage) Exists(key string) bool {
-	_, exists := storage.table[key]
-	return exists
+func(storage *MemoryStorage) Exists(keys ...string) bool {
+	for _, key := range keys {
+		_, exists := storage.table[key]
+		if !exists {
+			return false
+		}
+	}
+	return true
 }
 
 func(storage *MemoryStorage) Close() {
