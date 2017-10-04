@@ -11,7 +11,9 @@ import (
 )
 
 func NewStat(message *shared.Message) (Stat) {
+	message.EnterStage("Stats")
 	stages := calculateProcessingTimes(message)
+	message.LeaveStage("Stats")
 	return Stat{
 		message,
 		time.Now(),
