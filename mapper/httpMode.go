@@ -41,7 +41,7 @@ func(mode *HttpMode) Listen(endpoint string, setResult func(message *shared.Mess
 		message := shared.NewMessageFromJSON(bodyBytes)
 		message.EnterStage(mode.StageName)
 
-		result, err := mode.pool.SendWork(message.Image)
+		result, err := mode.pool.SendWork(message)
 		if err != nil {
 			fmt.Println(err)
 		}
