@@ -13,7 +13,7 @@ type QueueMode struct {
 	Mode
 	FactoryConfig queue.FactoryConfig
 	OutputQueueName string
-	PrefetchSize int
+	PrefetchCount int
 	WorkerCount int
 }
 
@@ -23,7 +23,7 @@ func NewQueueMode(stageName string, pool *tunny.WorkPool, factoryConfig queue.Fa
 		factoryConfig,
 		outputQueueName,
 		runtime.NumCPU(),
-		0,
+		runtime.NumCPU(),
 	}
 }
 
@@ -31,7 +31,7 @@ func(mode *QueueMode) Listen(inputQueue string, setResult func(message *shared.M
 	println("Listening on " + mode.FactoryConfig.ToConnectionString())
 	factory := queue.NewFactory(mode.FactoryConfig)
 	consumer, _ := factory.NewConsumer(inputQueue)
-	consumer.Qos(mode.WorkerCount, mode.PrefetchSize, false)
+	consumer.Qos(mode.PrefetchCount, 0, false)
 	deliveries := consumer.Consume()
 	var wg sync.WaitGroup
 
