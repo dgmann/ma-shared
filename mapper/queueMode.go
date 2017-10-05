@@ -35,7 +35,7 @@ func(mode *QueueMode) Listen(inputQueue string, setResult func(message *shared.M
 	deliveries := consumer.Consume()
 	var wg sync.WaitGroup
 
-	fmt.Printf("Starting %v workers", mode.WorkerCount)
+	fmt.Printf("Starting %v workers\r\n", mode.WorkerCount)
 	for i := 0; i < mode.WorkerCount; i++ {
 		go func() {
 			wg.Add(1)
