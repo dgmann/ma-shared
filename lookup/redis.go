@@ -4,10 +4,10 @@ import (
 	"github.com/go-redis/redis"
 )
 
-func newRedisClient(host string) *redis.Client {
+func newRedisClient(host string, password string) *redis.Client {
 	return redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
-		Password: "", // no password set
+		Password: password, // no password set
 		DB:       0,  // use default DB
 	})
 }
@@ -16,8 +16,8 @@ type RedisStorage struct {
 	redis *redis.Client
 }
 
-func NewRedisStorage(host string) *RedisStorage {
-	return &RedisStorage{redis:newRedisClient(host)}
+func NewRedisStorage(host string, password string) *RedisStorage {
+	return &RedisStorage{redis:newRedisClient(host, password)}
 }
 
 func(storage *RedisStorage) Exists(keys ...string) bool {
