@@ -7,6 +7,7 @@ import (
 	"github.com/nareix/joy4/av/pktque"
 	"time"
 	"github.com/dgmann/ma-shared"
+	"sync"
 )
 
 func init() {
@@ -20,6 +21,39 @@ type VideoSource interface {
 type VideoServer interface {
 	Demuxers() <-chan av.Demuxer
 	Listen()
+}
+
+type SampleFactory struct {
+	source VideoSource
+	numSamplers int
+}
+
+func NewSampleFactory(source VideoSource, numSamplers int) SampleFactory {
+	return SampleFactory{source, numSamplers}
+}
+
+func(factory *SampleFactory) StartSampler() chan shared.Message {
+	file := factory.source.Open()
+	samples := extractSample(file)
+	output := make(chan shared.Message, 10000)
+
+	var wg sync.WaitGroup
+
+	for i:=0; i < factory.numSamplers; i++ {
+		wg.Add(1)
+		go func() {
+			for sample := range samples {
+				msg, _ := shared.NewMessageFromSample(sample)
+				output <- *msg
+			}
+			wg.Done()
+		}()
+	}
+	go func() {
+		wg.Wait()
+		close(output)
+	}()
+	return output
 }
 
 func Sample(source VideoSource) (chan shared.VideoSample) {
