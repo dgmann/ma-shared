@@ -57,19 +57,18 @@ func NewMessage(image []byte, frameNumer int, readAt, createdAt time.Time) (*Mes
 		Stages: make(map[string]Stage),
 		Result: Result{},
 	}
-	msg.AddStage("Decode", readAt, createdAt)
+	msg.AddStage("Sample", readAt, createdAt)
 	return &msg
 }
 
 func NewMessageFromSample(sample VideoSample) (*Message, error) {
 	msg := NewMessage(nil, sample.FrameNumber, sample.ReadPacketAt, sample.CreatedAt)
-	msg.EnterStage("Encode")
 	img, err := sample.ToJPEG()
 	if err != nil {
 		return nil, err
 	}
 	msg.Image = img.Bytes()
-	msg.LeaveStage("Encode")
+	msg.LeaveStage("Sample")
 	return msg, err
 }
 
