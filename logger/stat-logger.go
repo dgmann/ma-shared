@@ -1,8 +1,6 @@
 package logger
 
 import (
-	"github.com/dgmann/ma-shared"
-	"fmt"
 	"github.com/dgmann/ma-shared/stats"
 )
 
