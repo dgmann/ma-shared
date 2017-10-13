@@ -18,9 +18,12 @@ func(logger *StatLogger) Print() {
 	}
 }
 
-func(logger *StatLogger) Collect() *stats.Collector {
+func(logger *StatLogger) Collect(print bool) *stats.Collector {
 	collector := stats.NewCollector()
 	for stat := range logger.input {
+		if print {
+			stat.Print()
+		}
 		collector.Add(stat)
 	}
 	return collector
