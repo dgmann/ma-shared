@@ -20,10 +20,8 @@ func(logger *StatLogger) Print() {
 
 func(logger *StatLogger) Collect() *stats.Collector {
 	collector := stats.NewCollector()
-	go func() {
-		for stat := range logger.input {
-			collector.Add(stat)
-		}
-	}()
+	for stat := range logger.input {
+		collector.Add(stat)
+	}
 	return collector
 }
