@@ -13,26 +13,50 @@ func NewMessageLogger(input <-chan shared.Message) MessageLogger {
 	return MessageLogger{input:input}
 }
 
-func(logger *MessageLogger) Print() {
-	for msg := range logger.input {
-		fmt.Printf("%+v\n", msg)
-	}
+func(logger *MessageLogger) Print() chan shared.Message {
+	output := make(chan shared.Message, 10000)
+	go func() {
+		for msg := range logger.input {
+			output <- msg
+			fmt.Printf("%+v\n", msg)
+		}
+		close(output)
+	}()
+	return output
 }
 
-func(logger *MessageLogger) PrintResults() {
-	for msg := range logger.input {
-		fmt.Printf("%+v\n", msg.Result)
-	}
+func(logger *MessageLogger) PrintResults() chan shared.Message {
+	output := make(chan shared.Message, 10000)
+	go func() {
+		for msg := range logger.input {
+			output <- msg
+			fmt.Printf("%+v\n", msg.Result)
+		}
+		close(output)
+	}()
+	return output
 }
 
-func(logger *MessageLogger) PrintFoundPlates() {
-	for msg := range logger.input {
-		fmt.Printf("%+v\n", msg.Result.OpenALPR.Results)
-	}
+func(logger *MessageLogger) PrintFoundPlates() chan shared.Message {
+	output := make(chan shared.Message, 10000)
+	go func() {
+		for msg := range logger.input {
+			output <- msg
+			fmt.Printf("%+v\n", msg.Result.OpenALPR.Results)
+		}
+		close(output)
+	}()
+	return output
 }
 
-func(logger *MessageLogger) PrintWanted() {
-	for msg := range logger.input {
-		fmt.Printf("%+v\n", msg.Result.WantedNumbers)
-	}
+func(logger *MessageLogger) PrintWanted() chan shared.Message {
+	output := make(chan shared.Message, 10000)
+	go func() {
+		for msg := range logger.input {
+			output <- msg
+			fmt.Printf("%+v\n", msg.Result.WantedNumbers)
+		}
+		close(output)
+	}()
+	return output
 }

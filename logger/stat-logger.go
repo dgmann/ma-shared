@@ -12,10 +12,16 @@ func NewStatLogger(input <-chan stats.Stat) StatLogger {
 	return StatLogger{input:input}
 }
 
-func(logger *StatLogger) Print() {
-	for stat := range logger.input {
-		stat.Print()
-	}
+func(logger *StatLogger) Print()  chan stats.Stat {
+	output := make(chan stats.Stat, 10000)
+	go func() {
+		for stat := range logger.input {
+			output <- stat
+			stat.Print()
+		}
+		close(output)
+	}()
+	return output
 }
 
 func(logger *StatLogger) Collect(print bool) *stats.Collector {
