@@ -37,8 +37,8 @@ func(mode *QueueMode) Listen(inputQueue string, setResult func(message *shared.M
 
 	fmt.Printf("Starting %v workers\r\n", mode.WorkerCount)
 	for i := 0; i < mode.WorkerCount; i++ {
+		wg.Add(1)
 		go func() {
-			wg.Add(1)
 			println("Worker started")
 			producer := factory.NewProducer(mode.OutputQueueName)
 			for delivery := range deliveries {
