@@ -1,7 +1,7 @@
 package sampler
 
 import (
-	"github.com/dgmann/joy4/cgo/ffmpeg"
+	"github.com/nareix/joy4/cgo/ffmpeg"
 	"github.com/nareix/joy4/av"
 	"github.com/nareix/joy4/format"
 	"github.com/nareix/joy4/av/pktque"
