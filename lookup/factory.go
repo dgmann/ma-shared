@@ -3,6 +3,7 @@ package lookup
 import (
 	"github.com/dgmann/ma-shared"
 	"sync"
+	"fmt"
 )
 
 type LookupFactory struct {
@@ -34,10 +35,11 @@ func(factory *LookupFactory) lookup(input <-chan shared.Message, output chan<-sh
 	for msg := range input {
 		msg.EnterStage("Lookup")
 		for _, result := range msg.Result.OpenALPR.Results {
+			fmt.Printf("Lookup: %s\n", result.Plate)
 			exists := factory.client.Exists(result.Plate)
 			if exists {
 				msg.Result.WantedNumbers = append(msg.Result.WantedNumbers, result.Plate)
-				println(result.Plate)
+				fmt.Printf("Wanted: %s\n", result.Plate)
 			}
 		}
 		msg.LeaveStage("Lookup")
