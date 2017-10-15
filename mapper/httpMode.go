@@ -47,7 +47,6 @@ func(mode *HttpMode) Listen(setResult func(message *shared.Message, result inter
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println(result)
 
 		setResult(message, result)
 		message.LeaveStage(mode.StageName)
