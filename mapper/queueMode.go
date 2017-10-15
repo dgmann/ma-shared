@@ -44,7 +44,7 @@ func(mode *QueueMode) Listen(inputQueue string, setResult func(message *shared.M
 			for delivery := range deliveries {
 				message := delivery.Message
 				message.EnterStage(mode.StageName)
-				result, _ := mode.pool.SendWork(message)
+				result, _ := mode.pool.SendWork(*message)
 				setResult(message, result)
 				message.LeaveStage(mode.StageName)
 				producer.SendAsJSON(message)
