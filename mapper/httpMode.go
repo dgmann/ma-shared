@@ -20,16 +20,18 @@ type RegisterRequest struct {
 }
 
 type HttpMode struct {
+	Endpoint string
+	Host string
 	StageName string
 	pool *tunny.WorkPool
 }
 
-func NewHttpMode(stageName string, pool *tunny.WorkPool) *HttpMode {
-	return &HttpMode{StageName:stageName, pool:pool}
+func NewHttpMode(endpoint, host, stageName string, pool *tunny.WorkPool) *HttpMode {
+	return &HttpMode{Endpoint: endpoint, Host: host, StageName:stageName, pool:pool}
 }
 
-func(mode *HttpMode) Listen(endpoint string, setResult func(message *shared.Message, result interface{})) {
-	http.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
+func(mode *HttpMode) Listen(setResult func(message *shared.Message, result interface{})) {
+	http.HandleFunc(mode.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 
 		defer r.Body.Close()
 
@@ -61,12 +63,12 @@ func(mode *HttpMode) Listen(endpoint string, setResult func(message *shared.Mess
 	log.Fatal(http.ListenAndServe(":80", nil))
 }
 
-func(mode *HttpMode) Register(url string, host string, numWorkerScale int) (error) {
+func(mode *HttpMode) Register(url string, numWorkerScale int) (error) {
 	fmt.Printf("Register at dispatcher: %s\r\n", url)
 
 	client := http.Client{}
 	registerRequest := RegisterRequest{
-		Url: "http://" + host + "/image",
+		Url: "http://" + mode.Host + mode.Endpoint,
 		NumWorker: runtime.NumCPU() * numWorkerScale,
 	}
 	jsonBytes, err := json.Marshal(registerRequest)
