@@ -37,6 +37,7 @@ func(factory *LookupFactory) lookup(input <-chan shared.Message, output chan<-sh
 			exists := factory.client.Exists(result.Plate)
 			if exists {
 				msg.Result.WantedNumbers = append(msg.Result.WantedNumbers, result.Plate)
+				println(result.Plate)
 			}
 		}
 		msg.LeaveStage("Lookup")
