@@ -14,6 +14,8 @@ func(factory *StatCreator) Start(input <-chan shared.Message) chan Stat {
 	output := make(chan Stat, 10000)
 	go func() {
 		for msg := range input {
+			msg.EnterStage("Stat")
+			msg.LeaveStage("Stat")
 			stat := NewStat(&msg)
 			output <- stat
 		}
