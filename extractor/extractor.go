@@ -49,10 +49,10 @@ func(factory *ExtractorFactory) StartExtractors(input <-chan shared.Message) cha
 
 func(factory *ExtractorFactory) startExtractor(oalpr *openalpr.Alpr, input <-chan shared.Message, output chan<-shared.Message, wg *sync.WaitGroup) {
 	for msg := range input {
-		msg.EnterStage("Recognize")
+		msg.EnterStage("Extractor")
 		result, _ := oalpr.RecognizeByBlob(msg.Image)
 		msg.Result.OpenALPR = result
-		msg.LeaveStage("Recognize")
+		msg.LeaveStage("Extractor")
 		output <- msg
 	}
 
