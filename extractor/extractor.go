@@ -24,7 +24,7 @@ func NewExtractorFactory(country, config, runtimeDataDir string) ExtractorFactor
 func(factory *ExtractorFactory) Initialize(numExtractors int) {
 	var instances []*openalpr.Alpr
 	for i:=0; i < numExtractors; i++ {
-		instances = append(instances, openalpr.NewAlpr(factory.country, factory.country, factory.runtimeDataDir))
+		instances = append(instances, openalpr.NewAlpr(factory.country, factory.config, factory.runtimeDataDir))
 	}
 	factory.alpr = instances
 }
